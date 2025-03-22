@@ -7,12 +7,14 @@ This is an app that uses MVG (Munchener Public Transport) to generate a Dashboar
 Agent instructions
 
 - Explain every decision
+- Check if the test needs to be run or modified with your changes
 
 Current Tools
 
 - Nodejs
 - Typescript
 - Vite
+- Vitest (It's not using globals, import them)
 
 Response Constraints
 - Do not remove any existing code unless necessary.

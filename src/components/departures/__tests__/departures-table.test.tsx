@@ -1,12 +1,13 @@
 import { render, screen } from '@testing-library/react'
 import { DeparturesTable } from '../departures-table'
 import { describe, expect, it } from 'vitest'
+import { Departure } from '../types'
 
 describe('DeparturesTable', () => {
-  const mockDepartures = [{
+  const mockDepartures: Departure[] = [{
     identifier: 'S1',
     destination: 'Munich Airport',
-    departureTime: '10:00'
+    departureTime: new Date('2025-01-01T10:00:00')
   }]
 
   it('renders departures table with correct data', () => {
