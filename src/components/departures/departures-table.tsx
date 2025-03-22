@@ -21,15 +21,14 @@ export function DeparturesTable({ departures }: DeparturesTableProps) {
               Destination
             </th>
             <th className="py-3 px-6 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <div className="flex items-center justify-end gap-2">
-                <button
+              <div className="flex items-center justify-end">
+                <span 
                   onClick={() => setShowAbsoluteTime(!showAbsoluteTime)}
-                  className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded text-xs"
+                  className="cursor-pointer hover:text-gray-800 flex items-center"
                   data-testid="toggle-time-button"
                 >
-                  {showAbsoluteTime ? 'Show Minutes' : 'Show Time'}
-                </button>
-                Departure
+                  Departure {showAbsoluteTime ? '(T)' : '(M)'}
+                </span>
               </div>
             </th>
           </tr>
