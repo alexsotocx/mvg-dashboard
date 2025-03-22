@@ -21,6 +21,7 @@ Response Constraints
 - Do not remove my comments or commented-out code unless necessary.
 - Do not change the formatting of my imports.
 - Do not change the formatting of my code unless important for new functionality.
+- Do not create comments when generating edits
 
 Code Style and Structure
 - Write concise, technical TypeScript code with accurate examples.

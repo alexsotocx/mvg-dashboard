@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { DepartureRow } from './departure-row'
 import type { Departure } from './types'
 
@@ -6,6 +7,8 @@ interface DeparturesTableProps {
 }
 
 export function DeparturesTable({ departures }: DeparturesTableProps) {
+  const [showAbsoluteTime, setShowAbsoluteTime] = useState(false)
+
   return (
     <div className="overflow-x-auto rounded-lg shadow">
       <table className="min-w-full divide-y divide-gray-200" data-testid="departures-table">
@@ -18,7 +21,16 @@ export function DeparturesTable({ departures }: DeparturesTableProps) {
               Destination
             </th>
             <th className="py-3 px-6 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Departure
+              <div className="flex items-center justify-end gap-2">
+                <button
+                  onClick={() => setShowAbsoluteTime(!showAbsoluteTime)}
+                  className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded text-xs"
+                  data-testid="toggle-time-button"
+                >
+                  {showAbsoluteTime ? 'Show Minutes' : 'Show Time'}
+                </button>
+                Departure
+              </div>
             </th>
           </tr>
         </thead>
@@ -26,6 +38,7 @@ export function DeparturesTable({ departures }: DeparturesTableProps) {
           {departures.map((departure) => (
             <DepartureRow
               key={`${departure.identifier}-${departure.departureTime}`}
+              showAbsoluteTime={showAbsoluteTime}
               {...departure}
             />
           ))}
