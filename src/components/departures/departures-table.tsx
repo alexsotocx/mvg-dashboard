@@ -1,5 +1,5 @@
 import { DepartureRow } from './departure-row'
-import { Departure } from './types'
+import type { Departure } from './types'
 
 interface DeparturesTableProps {
   departures: Departure[]

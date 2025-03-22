@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { DeparturesTable } from '../departures-table'
 import { describe, expect, it } from 'vitest'
-import { Departure } from '../types'
+import type { Departure } from '../types'
 
 describe('DeparturesTable', () => {
   const mockDepartures: Departure[] = [{

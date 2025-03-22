@@ -1,4 +1,4 @@
-import { Departure } from "./types"
+import type { Departure } from "./types"
 
 export function DepartureRow({ identifier, destination, departureTime }: Departure) {
   const formattedTime = new Intl.DateTimeFormat('de-DE', {
