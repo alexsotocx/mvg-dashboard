@@ -13,27 +13,30 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const mockDepartures = [
-  {
-    identifier: 'U3',
-    destination: 'Moosach',
-    departureTime: new Date('2024-03-15T14:30:00'),
-  },
-  {
-    identifier: 'S1',
-    destination: 'München Flughafen Terminal',
-    departureTime: new Date('2024-03-15T14:35:00'),
-  },
-  {
-    identifier: 'Bus 100',
-    destination: 'Ostbahnhof',
-    departureTime: new Date('2024-03-15T14:40:00'),
-  },
-];
+const getMockDepartures = () => {
+  const now = new Date();
+  return [
+    {
+      identifier: 'U3',
+      destination: 'Moosach',
+      departureTime: new Date(now.getTime() + 20 * 60 * 1000), // 20 minutes from now
+    },
+    {
+      identifier: 'S1',
+      destination: 'München Flughafen Terminal',
+      departureTime: new Date(now.getTime() + 40 * 60 * 1000), // 40 minutes from now
+    },
+    {
+      identifier: 'Bus 100',
+      destination: 'Ostbahnhof',
+      departureTime: new Date(now.getTime() + 60 * 60 * 1000), // 60 minutes from now
+    },
+  ];
+};
 
 export const Default: Story = {
   args: {
-    departures: mockDepartures,
+    departures: getMockDepartures(),
   },
 };
 
