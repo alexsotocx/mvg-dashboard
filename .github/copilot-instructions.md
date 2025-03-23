@@ -8,6 +8,7 @@ Agent instructions
 
 - Explain every decision
 - Check if the test needs to be run or modified with your changes
+- Do not create comments when generating edits. It's important!
 
 Current Tools
 
@@ -21,7 +22,6 @@ Response Constraints
 - Do not remove my comments or commented-out code unless necessary.
 - Do not change the formatting of my imports.
 - Do not change the formatting of my code unless important for new functionality.
-- Do not create comments when generating edits. It's important!
 - Do not use barrel imports.
 
 Code Style and Structure
@@ -30,6 +30,7 @@ Code Style and Structure
 - Prefer iteration and modularization over code duplication.
 - Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
 - Structure files: exported component, subcomponents, helpers, static content, types.
+- Test are to be stored in the same folder of the Component in the folder `__test__`
 
 Naming Conventions
 - Use lowercase with dashes for directories (e.g., components/auth-wizard).

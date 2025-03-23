@@ -25,6 +25,7 @@ function StationSearchResult({ station, onAddToFavorites }: StationSearchResultP
       <button 
         className="px-3 py-1 text-white text-sm bg-blue-500 rounded hover:bg-blue-600"
         onClick={() => onAddToFavorites(station.id, station.name)}
+        data-testid={`add-station-${station.name.replace(/\s+/g, '-').toLowerCase()}`}
       >
         Add
       </button>
@@ -94,11 +95,13 @@ export function StationSelector({ onSaveStations }: StationSelectorProps) {
               handleSearch();
             }
           }}
+          data-testid="station-search-input"
         />
         <button 
           className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 disabled:bg-gray-300"
           onClick={handleSearch}
           disabled={!searchText.trim()}
+          data-testid="station-search-button"
         >
           Search
         </button>
