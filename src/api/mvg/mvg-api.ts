@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 export interface MVGDepatureResponse {
   plannedDepartureTime: number;
@@ -74,4 +75,18 @@ export async function getAllStations(): Promise<MVGStationResponse[]> {
     console.error("Error fetching MVG stations:", error);
     throw error;
   }
+}
+
+export function useDepartures(params: GetDeparturesParams) {
+  return useQuery({
+    queryKey: ['departures', params.stationId, params.limit, ],
+    queryFn: () => getDepartures(params),
+  });
+}
+
+export function useAllStations() {
+  return useQuery({
+    queryKey: ['stations'],
+    queryFn: getAllStations,
+  });
 }
