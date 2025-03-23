@@ -21,12 +21,25 @@ export interface MVGDepatureResponse {
   stopPointGlobalId: string;
 }
 
+export interface MVGStationResponse {
+  name: string;
+  place: string;
+  id: string;
+  divaId: number;
+  abbreviation: string;
+  tariffZones: string;
+  products: string[];
+  latitude: number;
+  longitude: number;
+}
+
 export interface GetDeparturesParams {
   stationId: string;
   limit?: number;
 }
 
 export const BASE_FIB_URL = "https://www.mvg.de/api/bgw-pt/v3";
+export const BASE_ZDM_URL = "https://www.mvg.de/.rest/zdm";
 
 export async function getDepartures({
   stationId,
@@ -47,6 +60,18 @@ export async function getDepartures({
     return response.data;
   } catch (error) {
     console.error("Error fetching MVG departures:", error);
+    throw error;
+  }
+}
+
+export async function getAllStations(): Promise<MVGStationResponse[]> {
+  try {
+    const response = await axios.get<MVGStationResponse[]>(
+      `${BASE_ZDM_URL}/stations`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching MVG stations:", error);
     throw error;
   }
 }

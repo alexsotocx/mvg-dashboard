@@ -1,6 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import axios from "axios";
-import { BASE_FIB_URL, getDepartures, MVGDepatureResponse } from "../mvg-api";
+import { 
+  BASE_FIB_URL, 
+  BASE_ZDM_URL,
+  getDepartures, 
+  getAllStations, 
+  MVGDepatureResponse, 
+  MVGStationResponse 
+} from "../mvg-api";
 
 // Mock axios
 vi.mock("axios");
@@ -63,6 +70,40 @@ describe("MVG API", () => {
       vi.mocked(axios.get).mockRejectedValueOnce(new Error(errorMessage));
 
       await expect(getDepartures({ stationId })).rejects.toThrow();
+    });
+  });
+
+  describe("getAllStations", () => {
+    const mockStationsResponse: { data: MVGStationResponse[] } = {
+      data: [
+        {
+          name: "Garching",
+          place: "Garching (b München)",
+          id: "de:09184:490",
+          divaId: 490,
+          abbreviation: "GR",
+          tariffZones: "1|2",
+          products: ["UBAHN", "BUS"],
+          latitude: 48.249419,
+          longitude: 11.652506,
+        }
+      ]
+    };
+
+    it("should fetch all stations from the MVG API", async () => {
+      vi.mocked(axios.get).mockResolvedValueOnce(mockStationsResponse);
+
+      const result = await getAllStations();
+
+      expect(vi.mocked(axios.get)).toHaveBeenCalledWith(`${BASE_ZDM_URL}/stations`);
+      expect(result).toEqual(mockStationsResponse.data);
+    });
+
+    it("should throw an error when the API call fails", async () => {
+      const errorMessage = "Network Error";
+      vi.mocked(axios.get).mockRejectedValueOnce(new Error(errorMessage));
+
+      await expect(getAllStations()).rejects.toThrow();
     });
   });
 });
