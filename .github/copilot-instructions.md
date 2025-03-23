@@ -22,6 +22,7 @@ Response Constraints
 - Do not change the formatting of my imports.
 - Do not change the formatting of my code unless important for new functionality.
 - Do not create comments when generating edits. It's important!
+- Do not use barrel imports.
 
 Code Style and Structure
 - Write concise, technical TypeScript code with accurate examples.
