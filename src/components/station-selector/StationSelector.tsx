@@ -7,7 +7,7 @@ interface FavoriteStation {
 }
 
 interface StationSelectorProps {
-  onSaveStations?: (stations: FavoriteStation[]) => void;
+  onSaveStations?: (station: FavoriteStation) => void;
 }
 
 interface StationSearchResultProps {
@@ -36,7 +36,6 @@ function StationSearchResult({ station, onAddToFavorites }: StationSearchResultP
 export function StationSelector({ onSaveStations }: StationSelectorProps) {
   const [searchText, setSearchText] = useState<string>('');
   const [filteredStations, setFilteredStations] = useState<Array<{id: string, name: string}>>([]);
-  const [favoriteStations, setFavoriteStations] = useState<FavoriteStation[]>([]);
   const { data: stations, isLoading, error } = useAllStations();
   
   const sortedStations = useMemo(() => {
@@ -59,22 +58,12 @@ export function StationSelector({ onSaveStations }: StationSelectorProps) {
   };
 
   const handleAddToFavorites = (stationId: string, name: string) => {
-    const isAlreadyFavorite = favoriteStations.some(
-      station => station.stationId === stationId
-    );
-    
-    if (!isAlreadyFavorite) {
+    if (onSaveStations) {
       const newFavorite: FavoriteStation = {
         stationId,
         name,
       };
-      
-      const newFavorites = [...favoriteStations, newFavorite];
-      setFavoriteStations(newFavorites);
-      
-      if (onSaveStations) {
-        onSaveStations(newFavorites);
-      }
+      onSaveStations(newFavorite);
     }
   };
 
@@ -124,12 +113,6 @@ export function StationSelector({ onSaveStations }: StationSelectorProps) {
           No stations found matching your search
         </div>
       )}
-      
-      <div className="mt-2 text-sm text-gray-500">
-        {favoriteStations.length > 0
-          ? `${favoriteStations.length} station(s) added to favorites`
-          : "No favorite stations selected yet"}
-      </div>
     </div>
   );
 }

@@ -102,10 +102,8 @@ describe('StationSelector', () => {
     fireEvent.click(addButton);
 
     expect(onSaveStationsMock).toHaveBeenCalledTimes(1);
-    expect(onSaveStationsMock).toHaveBeenCalledWith([
+    expect(onSaveStationsMock).toHaveBeenCalledWith(
       { stationId: 'aubing456', name: 'Aubing' }
-    ]);
-
-    expect(screen.getByText('1 station(s) added to favorites')).toBeInTheDocument();
+    );
   });
 });

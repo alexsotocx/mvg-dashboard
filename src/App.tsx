@@ -14,9 +14,10 @@ export function App() {
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
 
-  const handleSaveStations = (stations: FavoriteStation[]) => {
-    setFavoriteStations(stations)
-    if (stations.length > 0 && !lastRefreshed) {
+  const handleSaveStations = (station: FavoriteStation) => {
+    const newFavorites =  [...favoriteStations, station];
+    setFavoriteStations(newFavorites)
+    if (newFavorites.length > 0 && !lastRefreshed) {
       setLastRefreshed(new Date())
     }
   }
