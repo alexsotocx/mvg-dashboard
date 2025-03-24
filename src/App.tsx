@@ -4,7 +4,7 @@ import { useLocalStorage } from 'react-use';
 import { StationSelector } from './components/station-selector/StationSelector'
 import { DeparturesTable } from './components/departures/departures-table'
 import { useDepartures } from './api/mvg/mvg-api'
-import { Departure } from './components/departures/types';
+import type { Departure } from './components/departures/types';
 
 interface FavoriteStation {
   stationId: string;
