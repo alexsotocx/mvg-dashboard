@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react'
+import { useLocalStorage } from 'react-use';
+
 import { StationSelector } from './components/station-selector/StationSelector'
 import { DeparturesTable } from './components/departures/departures-table'
 import { useDepartures } from './api/mvg/mvg-api'
@@ -10,13 +12,16 @@ interface FavoriteStation {
 }
 
 export function App() {
-  const [favoriteStations, setFavoriteStations] = useState<FavoriteStation[]>([])
+  const [localStoredStations, setLocalStoredStations] = useLocalStorage<FavoriteStation[]>('mvg_saved_stations', []);
+  const [favoriteStations, setFavoriteStations] = useState<FavoriteStation[]>(localStoredStations!)
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
 
   const handleSaveStations = (station: FavoriteStation) => {
     const newFavorites =  [...favoriteStations, station];
-    setFavoriteStations(newFavorites)
+    setFavoriteStations(newFavorites);
+    setLocalStoredStations(newFavorites);
+
     if (newFavorites.length > 0 && !lastRefreshed) {
       setLastRefreshed(new Date())
     }
