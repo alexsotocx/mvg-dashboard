@@ -18,23 +18,7 @@ export const Default: Story = {
     identifier: 'U3',
     destination: 'Moosach',
     departureTime: new Date('2024-03-15T14:30:00'),
-  },
-  decorators: [
-    (Story) => (
-      <table>
-        <tbody>
-          <Story />
-        </tbody>
-      </table>
-    ),
-  ],
-};
-
-export const LongDestination: Story = {
-  args: {
-    identifier: 'S1',
-    destination: 'München Flughafen Terminal',
-    departureTime: new Date('2024-03-15T15:45:00'),
+    showAbsoluteTime: false,
   },
   decorators: [
     (Story) => (
