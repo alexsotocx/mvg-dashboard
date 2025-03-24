@@ -1,5 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useAllStations } from '../../api/mvg/mvg-api';
+import Fuse from 'fuse.js';
 
 interface FavoriteStation {
   stationId: string;
@@ -38,24 +39,36 @@ export function StationSelector({ onSaveStations }: StationSelectorProps) {
   const [filteredStations, setFilteredStations] = useState<Array<{id: string, name: string}>>([]);
   const { data: stations, isLoading, error } = useAllStations();
   
-  const sortedStations = useMemo(() => {
-    if (!stations) return [];
-    return [...stations].sort((a, b) => a.name.localeCompare(b.name));
+  // Create a memoized Fuse instance when stations change
+  const fuseInstance = useMemo(() => {
+    if (!stations) return null;
+    
+    // Configure Fuse with our search options
+    return new Fuse(stations, {
+      keys: ['name'],
+      threshold: 0.3, // Lower threshold = more strict matching
+      location: 0,
+      distance: 100, // Allow more errors for longer strings
+      minMatchCharLength: 2,
+      shouldSort: true, // Sort by score
+    });
   }, [stations]);
-
+  
   const handleSearch = () => {
-    if (!searchText.trim() || !sortedStations.length) {
+    if (!searchText.trim() || searchText.trim().length < 3 || !fuseInstance) {
       setFilteredStations([]);
       return;
     }
 
-    const searchLower = searchText.toLowerCase();
-    const matches = sortedStations
-      .filter(station => station.name.toLowerCase().startsWith(searchLower))
-      .slice(0, 20);
+    const searchResults = fuseInstance.search(searchText, { limit: 10 });
     
-    setFilteredStations(matches);
+    const matchedStations = searchResults.map(result => result.item);
+    setFilteredStations(matchedStations);
   };
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchText]);
 
   const handleAddToFavorites = (stationId: string, name: string) => {
     if (onSaveStations) {
@@ -72,28 +85,15 @@ export function StationSelector({ onSaveStations }: StationSelectorProps) {
 
   return (
     <div className="p-4 border rounded shadow-sm">
-      <div className="flex gap-2">
+      <div>
         <input
           type="text"
-          className="flex-1 p-2 border rounded"
-          placeholder="Search for a station..."
+          className="w-full p-2 border rounded"
+          placeholder="Type at least 3 characters to search for stations..."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              handleSearch();
-            }
-          }}
           data-testid="station-search-input"
         />
-        <button 
-          className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 disabled:bg-gray-300"
-          onClick={handleSearch}
-          disabled={!searchText.trim()}
-          data-testid="station-search-button"
-        >
-          Search
-        </button>
       </div>
       
       {filteredStations.length > 0 && (
@@ -108,7 +108,7 @@ export function StationSelector({ onSaveStations }: StationSelectorProps) {
         </div>
       )}
       
-      {searchText && filteredStations.length === 0 && (
+      {searchText.length >= 3 && filteredStations.length === 0 && (
         <div className="mt-2 text-sm text-gray-500">
           No stations found matching your search
         </div>
