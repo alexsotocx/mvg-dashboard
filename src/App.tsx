@@ -27,6 +27,12 @@ export function App() {
     }
   }
 
+  const handleRemoveStation = (stationId: string) => {
+    const newFavorites = favoriteStations.filter(station => station.stationId !== stationId);
+    setFavoriteStations(newFavorites);
+    setLocalStoredStations(newFavorites);
+  }
+
   const handleRefresh = () => {
     setRefreshTrigger(prev => prev + 1)
     setLastRefreshed(new Date())
@@ -63,6 +69,7 @@ export function App() {
             <StationDeparturesSection
               key={`${station.stationId}-${refreshTrigger}`}
               station={station}
+              onRemove={handleRemoveStation}
             />
           ))}
         </div>
@@ -73,9 +80,10 @@ export function App() {
 
 interface StationDeparturesSectionProps {
   station: FavoriteStation;
+  onRemove: (stationId: string) => void;
 }
 
-function StationDeparturesSection({ station }: StationDeparturesSectionProps) {
+function StationDeparturesSection({ station, onRemove }: StationDeparturesSectionProps) {
   const { data: departures, isLoading, error } = useDepartures({
     stationId: station.stationId
   })
@@ -92,7 +100,16 @@ function StationDeparturesSection({ station }: StationDeparturesSectionProps) {
 
   return (
     <div className="mb-6" data-testid={`departures-section-${station.stationId}`}>
-      <h3 className="text-lg font-medium mb-3">{station.name}</h3>
+      <div className="flex items-center mb-3">
+        <h3 className="text-lg font-medium">{station.name}</h3>
+        <button 
+          onClick={() => onRemove(station.stationId)}
+          className="ml-2 cursor-pointer hover:opacity-70"
+          aria-label={`Remove ${station.name} from favorites`}
+        >
+          (x)
+        </button>
+      </div>
 
       {isLoading && (
         <div className="p-4 bg-gray-50 rounded">Loading departures...</div>
