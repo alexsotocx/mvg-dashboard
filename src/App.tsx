@@ -161,7 +161,8 @@ interface StationDeparturesSectionProps {
 
 function StationDeparturesSection({ station, onRemove }: StationDeparturesSectionProps) {
   const { data: departures, isLoading, error } = useDepartures({
-    stationId: station.stationId
+    stationId: station.stationId,
+    limit: 20
   })
 
   const convertedDepartures: Departure[] = useMemo(() => {
@@ -169,7 +170,7 @@ function StationDeparturesSection({ station, onRemove }: StationDeparturesSectio
     return departures.map(departure => ({
       identifier: departure.label,
       destination: departure.destination,
-      departureTime: new Date(departure.plannedDepartureTime)
+      departureTime: new Date(departure.realtimeDepartureTime)
     }))
   }
     , [departures])
