@@ -89,6 +89,7 @@ export function App() {
               key={`${station.stationId}-${refreshTrigger}`}
               station={station}
               onRemove={handleRemoveStation}
+              transportationTypes={transportationList || []}
             />
           ))}
         </div>
@@ -157,9 +158,10 @@ function TransportationSelector({
 interface StationDeparturesSectionProps {
   station: FavoriteStation;
   onRemove: (stationId: string) => void;
+  transportationTypes: string[];
 }
 
-function StationDeparturesSection({ station, onRemove }: StationDeparturesSectionProps) {
+function StationDeparturesSection({ station, onRemove, transportationTypes }: StationDeparturesSectionProps) {
   const { data: departures, isLoading, error } = useDepartures({
     stationId: station.stationId,
     limit: 20
@@ -167,13 +169,25 @@ function StationDeparturesSection({ station, onRemove }: StationDeparturesSectio
 
   const convertedDepartures: Departure[] = useMemo(() => {
     if (!departures) return []
-    return departures.map(departure => ({
+    
+    const mappedDepartures = departures.map(departure => ({
       identifier: departure.label,
       destination: departure.destination,
       departureTime: new Date(departure.realtimeDepartureTime)
-    }))
-  }
-    , [departures])
+    }));
+
+    // If no transportation filters are set, return all departures
+    if (transportationTypes.length === 0) {
+      return mappedDepartures;
+    }
+    
+    // Filter departures based on the transportation types (case insensitive)
+    return mappedDepartures.filter(departure => 
+      transportationTypes.some(type => 
+        departure.identifier.toLowerCase().includes(type.toLowerCase())
+      )
+    );
+  }, [departures, transportationTypes])
 
   return (
     <div className="mb-6" data-testid={`departures-section-${station.stationId}`}>
@@ -198,10 +212,14 @@ function StationDeparturesSection({ station, onRemove }: StationDeparturesSectio
         </div>
       )}
 
-      {departures && departures.length > 0 ? (
+      {convertedDepartures.length > 0 ? (
         <DeparturesTable departures={convertedDepartures} />
       ) : !isLoading && !error ? (
-        <div className="p-4 bg-gray-50 rounded">No departures available</div>
+        <div className="p-4 bg-gray-50 rounded">
+          {transportationTypes.length > 0 
+            ? "No matching departures for the selected transportation types" 
+            : "No departures available"}
+        </div>
       ) : null}
     </div>
   )
