@@ -21,15 +21,12 @@ interface StationSearchResultProps {
 
 function StationSearchResult({ station, onAddToFavorites }: StationSearchResultProps) {
   return (
-    <div className="flex justify-between items-center p-2 border-b">
+    <div 
+      className="flex justify-between items-center p-2 border-b hover:bg-gray-100 cursor-pointer"
+      onClick={() => onAddToFavorites(station.id, station.name)}
+      data-testid={`station-${station.name.replace(/\s+/g, '-').toLowerCase()}`}
+    >
       <span>{station.name}</span>
-      <button 
-        className="px-3 py-1 text-white text-sm bg-blue-500 rounded hover:bg-blue-600"
-        onClick={() => onAddToFavorites(station.id, station.name)}
-        data-testid={`add-station-${station.name.replace(/\s+/g, '-').toLowerCase()}`}
-      >
-        Add
-      </button>
     </div>
   );
 }
@@ -77,6 +74,9 @@ export function StationSelector({ onSaveStations }: StationSelectorProps) {
         name,
       };
       onSaveStations(newFavorite);
+      
+      setSearchText('');
+      setFilteredStations([]);
     }
   };
 
