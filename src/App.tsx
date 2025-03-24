@@ -176,17 +176,20 @@ function StationDeparturesSection({ station, onRemove, transportationTypes }: St
       departureTime: new Date(departure.realtimeDepartureTime)
     }));
 
-    // If no transportation filters are set, return all departures
+    // If no transportation filters are set, return all departures (limited to 10)
     if (transportationTypes.length === 0) {
-      return mappedDepartures;
+      return mappedDepartures.slice(0, 10);
     }
     
     // Filter departures based on the transportation types (case insensitive)
-    return mappedDepartures.filter(departure => 
-      transportationTypes.some(type => 
-        departure.identifier.toLowerCase().includes(type.toLowerCase())
+    // and then limit to 10 items
+    return mappedDepartures
+      .filter(departure => 
+        transportationTypes.some(type => 
+          departure.identifier.toLowerCase().includes(type.toLowerCase())
+        )
       )
-    );
+      .slice(0, 10);
   }, [departures, transportationTypes])
 
   return (
