@@ -16,6 +16,7 @@ export function App() {
   const [favoriteStations, setFavoriteStations] = useState<FavoriteStation[]>(localStoredStations!)
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
+  const [transportationList, setTransportationList] = useLocalStorage<string[]>('mvg_transportation_list', [])
 
   const handleSaveStations = (station: FavoriteStation) => {
     const newFavorites =  [...favoriteStations, station];
@@ -38,6 +39,18 @@ export function App() {
     setLastRefreshed(new Date())
   }
 
+  const handleAddTransportation = (transport: string) => {
+    if (transport.trim() !== '' && !transportationList?.includes(transport.trim())) {
+      const newList = [...(transportationList || []), transport.trim()];
+      setTransportationList(newList);
+    }
+  }
+
+  const handleRemoveTransportation = (transport: string) => {
+    const newList = transportationList?.filter(item => item !== transport) || [];
+    setTransportationList(newList);
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">MVG Departure Dashboard</h1>
@@ -46,6 +59,12 @@ export function App() {
         <h2 className="text-xl font-semibold mb-4">Select Your Stations</h2>
         <StationSelector onSaveStations={handleSaveStations} />
       </div>
+
+      <TransportationSelector 
+        transportationList={transportationList || []} 
+        onAddTransportation={handleAddTransportation} 
+        onRemoveTransportation={handleRemoveTransportation}
+      />
 
       {favoriteStations.length > 0 && (
         <div className="space-y-8">
@@ -76,6 +95,63 @@ export function App() {
       )}
     </div>
   )
+}
+
+interface TransportationSelectorProps {
+  transportationList: string[];
+  onAddTransportation: (transport: string) => void;
+  onRemoveTransportation: (transport: string) => void;
+}
+
+function TransportationSelector({ 
+  transportationList, 
+  onAddTransportation, 
+  onRemoveTransportation 
+}: TransportationSelectorProps) {
+  const [transportationInput, setTransportationInput] = useState('');
+  
+  const handleAddTransportation = () => {
+    if (transportationInput.trim() !== '') {
+      onAddTransportation(transportationInput);
+      setTransportationInput('');
+    }
+  };
+
+  return (
+    <div className="mb-8">
+      <h2 className="text-xl font-semibold mb-4">Transportation Types</h2>
+      <div className="flex">
+        <input
+          type="text"
+          value={transportationInput}
+          onChange={e => setTransportationInput(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && handleAddTransportation()}
+          className="border border-gray-300 rounded-l px-3 py-2 flex-grow"
+          placeholder="Add transportation type (e.g., S1, U3, Tram, Bus)"
+        />
+        <button
+          onClick={handleAddTransportation}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-r"
+        >
+          Add
+        </button>
+      </div>
+      <div className="flex flex-wrap items-center gap-2 mt-4">
+        {transportationList.map(transport => (
+          <div key={transport} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full flex items-center">
+            {transport}
+            <button 
+              onClick={() => onRemoveTransportation(transport)}
+              className="ml-2 text-blue-500 hover:text-blue-700"
+              aria-label={`Remove ${transport}`}
+            >
+              x
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 interface StationDeparturesSectionProps {
