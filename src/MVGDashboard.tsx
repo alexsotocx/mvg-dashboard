@@ -11,7 +11,7 @@ interface FavoriteStation {
   name: string;
 }
 
-export function App() {
+export function MVGDashboard() {
   const [localStoredStations, setLocalStoredStations] = useLocalStorage<FavoriteStation[]>('mvg_saved_stations', []);
   const [favoriteStations, setFavoriteStations] = useState<FavoriteStation[]>(localStoredStations!)
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null)
